@@ -95,7 +95,16 @@ class Conditions:
 				if w[2] != None:
 					self.values[i][2] = w[2].get()
 	def get_conditions(self):
-		return self.values()
+		newList = list(self.values)
+		
+		for i, val in enumerate(newList):
+			sublist = list(val)
+			if sublist[0] != None:
+				sublist[0] = val[0].get()
+			if sublist[1] != None:
+				sublist[1] = val[1].get()
+			newList[i] = sublist
+		return newList
 
 	def close_window(self):
 		self.save_changes()

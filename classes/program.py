@@ -10,7 +10,8 @@ class PhotoOrganizer:
 		self.frmTop.pack()
 		self.frmBtm = Frame(master)
 		self.frmBtm.pack()
-		self.filt = Filterer(self.frmTop, conf)
-		self.sort = Sorterer(self.frmBtm, conf)
 		self.mb = MenuBuilder(master)
+		self.filt = Filterer(self.frmTop, conf, self.mb.cond)
+		self.sort = Sorterer(self.frmBtm, conf)
+
 		master.mainloop()
