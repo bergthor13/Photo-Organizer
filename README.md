@@ -23,6 +23,9 @@ For example: ```YYYY-MM-DD hh.mm.ss.uuu *|Image Model|*```
 
 ## Packages Used
 exifread
+
 filelock (TODO: Remove)
+
 Pillow
+
 enzyme (TODO: Remove)
