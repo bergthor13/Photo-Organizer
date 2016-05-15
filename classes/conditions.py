@@ -1,23 +1,25 @@
 from tkinter import *
+
 class Conditions:
 	def __init__(self, master):
 		self.master = master
 		self.conOptions = [
 			"EXIF Tag Name",
 			"File Extension",
-			"File Name",
+			"File Name"
 		]
 		self.conConditions = [
 			"Begins With",
 			"Ends With",
-			"Contains",
-			"Equals",
+			"Contain",
+			"Equals"
 		]
+
 		self.values = []
 		self.widgets = []
 
 	def display(self):
-		self.window = Toplevel(self.master)
+		self.window = Toplevel()
 		self.window.wm_title("Conditions")
 		self.window.protocol("WM_DELETE_WINDOW", self.close_window)
 		if len(self.values) == 0:
@@ -25,7 +27,7 @@ class Conditions:
 		else:
 			for i, c in enumerate(self.values):
 				self.displayRow(i+1, c, self.widgets[i])
-		Label(self.window, text="Select the conditions for the files to be excluded").grid(row=0, column=0, columnspan=4)
+		Label(self.window, text="Select the conditions for the files to be included in the move list. The conditions will be AND-ed together.").grid(row=0, column=0, columnspan=4)
 		self.btnAdd = Button(self.window, text="+", command=self.add_condition)
 		self.btnAdd.grid(row=0, column=4)
 		self.btnRemove = Button(self.window, text="Clear", command=self.clear_conditions)
@@ -94,9 +96,14 @@ class Conditions:
 			else:
 				if w[2] != None:
 					self.values[i][2] = w[2].get()
+		return (self.values)
+
 	def get_conditions(self):
 		newList = list(self.values)
-		
+		# If the user doesn't enter the appropriate filters,
+		# then don't move anything.
+		if len(newList) == 0:
+			return [["EXIF Tag Name", "Begins With", "", ""]]
 		for i, val in enumerate(newList):
 			sublist = list(val)
 			if sublist[0] != None:
