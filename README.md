@@ -20,3 +20,9 @@ You can insert any EXIF key into the file name with this syntax:
 ```*|EXIF Keyword|*```
 
 For example: ```YYYY-MM-DD hh.mm.ss.uuu *|Image Model|*```
+
+## Packages Used
+exifread
+filelock (TODO: Remove)
+Pillow
+enzyme (TODO: Remove)
