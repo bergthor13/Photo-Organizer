@@ -1,1 +1,1 @@
-{"ImageNameFormat": "YYYY-MM-DD hh.mm.ss.uuu", "FilterFolder": "Camera Uploads", "FolderStructure": "YYYY/MM/DD", "SortFolder": "Years", "FilteredFolder": "FilteredImages"}
+{"FilteredFolder": "FilteredImages", "FolderStructure": "YYYY/MM/DD", "FilterFolder": "Camera Uploads", "ImageNameFormat": "YYYY-MM-DD hh.mm.ss.uuu", "SortFolder": "Years"}

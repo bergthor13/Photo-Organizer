@@ -1,7 +1,6 @@
 from tkinter import *
 from .filemanip import FileManip
 import os, exifread, re, shutil
-from filelock import FileLock
 from PIL import PngImagePlugin
 from PIL import Image
 import logging
@@ -127,11 +126,6 @@ class Sorterer:
 				# 	pass
 				# else:
 				# 	os.renames(file, self.fm.correct_collision(filePath))
-
-	def getMOVExifDate(self, path):
-		with open(path, 'rb') as f:
-			mkv = enzyme.MKV(f)
-		return
 
 	def getExifDate(self,path):
 		exifDate = None
