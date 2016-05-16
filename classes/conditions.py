@@ -32,6 +32,7 @@ class Conditions:
 		self.btnAdd.grid(row=0, column=4)
 		self.btnRemove = Button(self.window, text="Clear", command=self.clear_conditions)
 		self.btnRemove.grid(row=0, column=5)
+		self.windowOpen = True
 
 
 	def displayRow(self, index, values, widgets):
@@ -115,4 +116,5 @@ class Conditions:
 
 	def close_window(self):
 		self.save_changes()
+		self.windowOpen = False
 		self.window.destroy()

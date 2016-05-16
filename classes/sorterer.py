@@ -1,10 +1,9 @@
 from tkinter import *
 from .filemanip import FileManip
-import os, exifread, re,shutil
+import os, exifread, re, shutil
 from filelock import FileLock
 from PIL import PngImagePlugin
 from PIL import Image
-import enzyme
 import logging
 class Sorterer:
 	def __init__(self, master, config, program):
@@ -25,7 +24,7 @@ class Sorterer:
 		self.txtFolderStructure.insert(0, config["FolderStructure"])
 		self.txtFolderStructure.grid(row=1, column=1)
 
-		self.lblFolderLocation = Label(master, text="Where to Put Structured Images:")
+		self.lblFolderLocation = Label(master, text="Where to Put Organized Images:")
 		self.lblFolderLocation.grid(row=2, column=0, columnspan=2)
 		
 		self.txtFolderLocation = Entry(master, width=44)
@@ -34,17 +33,15 @@ class Sorterer:
 		self.buttonFrame = Frame(master)
 		self.buttonFrame.grid(row=4, columnspan=2)
 		
-		self.btnCopy = Button(self.buttonFrame, text="Copy")
-		self.btnCopy.grid(row=0, column=0)
+
+		self.btnRename = Button(self.buttonFrame, text="Rename", command=self.rename_files)
+		self.btnRename.grid(row=0, column=0)
 
 		self.btnMove = Button(self.buttonFrame, text="Move", command=self.structure_images)
 		self.btnMove.grid(row=0, column=1)
 
-		self.btnRename = Button(self.buttonFrame, text="Rename", command=self.rename_files)
-		self.btnRename.grid(row=0, column=2)
-
 		self.btnRename = Button(self.buttonFrame, text="Rename and Move", command=self.rename_move_images)
-		self.btnRename.grid(row=0, column=3)
+		self.btnRename.grid(row=0, column=2)
 
 	def rename_move_images(self):
 		self.rename_files()
@@ -56,12 +53,17 @@ class Sorterer:
 
 		fileList = self.fm.get_files(filterFolder)
 		countBeforeRename = self.fm.get_file_count(filterFolder)
+		nameFormatField = self.txtNameFormat.get()
+
+		if len(nameFormatField) == 0:
+			messagebox.showinfo("Information", "The Image Name Format cannot be empty.")
+			return
+
 
 		for file in fileList:
-			nameFormat = self.txtNameFormat.get()
+			nameFormat = nameFormatField
 			
 			# Find the date and time of the file
-
 			exifDate = self.getExifDate(file)
 			# Construct the Image Name Format
 			if exifDate != None:
@@ -72,7 +74,7 @@ class Sorterer:
 			
 			extension     = os.path.splitext(self.fm.get_filename(file))[1]
 			fileDirectory = self.fm.get_file_directory(file)
-			filePath = os.path.join(fileDirectory,nameFormat)+extension
+			filePath = os.path.join(fileDirectory,nameFormat)+extension.lower()
 
 			
 			if not os.path.exists(filePath):
@@ -99,27 +101,32 @@ class Sorterer:
 		sortFolder = self.txtFolderLocation.get()
 		if self.fm.check_folder(sortFolder) == -1: return
 
+		fileCount = 0
 		folderStructureLocation = self.txtFolderStructure.get()
 		fileList = self.fm.get_files(filterFolder)
-		for file in fileList:
-			folderStructure = folderStructureLocation
-			exifDate = self.getExifDate(file)
-			
-			# Construct the Image Name Format
-			if exifDate != None:
-				folderStructure = self.replace_exif_string(folderStructure, exifDate)
-			else:
-				print("Skipping file '{0}' because no EXIF data was found.".format(file))
-				continue
+		if messagebox.askyesno("Move", "This will move all files with EXIF data into the specified folder.\nDo you want to proceed?".format(fileCount)):
+			for file in fileList:
+				folderStructure = folderStructureLocation
+				exifDate = self.getExifDate(file)
+				
+				# Construct the Image Name Format
+				if exifDate != None:
+					fileCount += 1
+					folderStructure = self.replace_exif_string(folderStructure, exifDate)
+					if "/" in folderStructure:
+						folderStructure = folderStructure.split("/")
+				else:
+					print("Skipping file '{0}' because no EXIF data was found.".format(file))
+					continue
 
-			filePath = os.path.join(sortFolder, folderStructure, self.fm.get_filename(file))
-			
-			if not os.path.exists(filePath):
-				os.renames(file, filePath)
-			elif filePath == file:
-				pass
-			else:
-				os.renames(file, self.fm.correct_collision(filePath))
+				filePath = os.path.join(sortFolder, *folderStructure, self.fm.get_filename(file))
+				print(filePath)
+				# if not os.path.exists(filePath):
+				# 	os.renames(file, filePath)
+				# elif filePath == file:
+				# 	pass
+				# else:
+				# 	os.renames(file, self.fm.correct_collision(filePath))
 
 	def getMOVExifDate(self, path):
 		with open(path, 'rb') as f:
@@ -132,8 +139,6 @@ class Sorterer:
 			exifDate = self.getPNGExifDate(path)
 		elif path.lower().endswith("jpg") or path.lower().endswith("jpeg"):
 			exifDate = self.getJPGExifDate(path)
-		#elif file.lower().endswith("mov"):
-		#	exifDate = self.getMOVExifDate(file)
 		else:
 			#print("Skipping file '{0}' because it is not supported.".format(path))
 			return
@@ -192,5 +197,3 @@ class Sorterer:
 		nameFormat = nameFormat.replace("ss",   exifDate[5])
 		nameFormat = nameFormat.replace("uuu",  exifDate[6])
 		return nameFormat
-
-

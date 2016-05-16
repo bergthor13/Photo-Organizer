@@ -8,6 +8,7 @@ class Filterer:
 	def __init__(self, master, config, program):
 		self.editors = {}
 		self.fileList = []
+		self.program = program
 		self.conditions = program.mb.cond
 		self.fm = FileManip()
 		self.filter_screens = IntVar()
@@ -33,6 +34,10 @@ class Filterer:
 
 
 	def filter_images(self):
+		if self.program.mb.cond.windowOpen == True:
+			messagebox.showinfo("Information", "Please close the Conditions window.")
+			return
+
 		imageFolder = self.txtImagesFolder.get()
 		if self.fm.check_folder(imageFolder) == -1: return
 
@@ -51,7 +56,7 @@ class Filterer:
 		if len(images) == 0:
 			messagebox.showinfo("Information", "There are no images to move.\nPlease refine your filters in\nOptions->Conditions")
 		else:
-			if messagebox.askyesno("Do you want to proceed?", "{0} images will be moved to the destination folder.\nDo you wish to proceed?".format(len(images))):
+			if messagebox.askyesno("Move", "{0} images will be moved to the destination folder.\nDo you wish to proceed?".format(len(images))):
 				for image in images:
 					print(destDirectory, self.fm.get_filename(image))
 					newFilePath = os.path.join(destDirectory,self.fm.get_filename(image))
