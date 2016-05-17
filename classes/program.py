@@ -3,14 +3,23 @@ from .filterer import Filterer
 from .sorterer import Sorterer
 from .filemanip import FileManip
 from .MenuBuilder import MenuBuilder
-import json
+import json, os
 import atexit
 class PhotoOrganizer:
 	def __init__(self, master):
 		self.master = master
 		# Load the configuration file.
-		
-		self.conf = json.loads(open('config.json').read())
+		if os.path.exists("config.json"):
+			with open('config.json', 'r') as file:
+				self.conf = json.loads(file.read())
+		else:
+			self.conf = {}
+			self.conf["FilterFolder"]   = ""
+			self.conf["FilteredFolder"] = ""
+			self.conf["SortFolder"]     = ""
+
+			self.conf["ImageNameFormat"] = ""
+			self.conf["FolderStructure"] = ""
 
 		master.wm_title("Photo Organizer")
 		# Will only save data when window is closed manually.
@@ -24,7 +33,6 @@ class PhotoOrganizer:
 		self.frmBtm.pack()
 		self.mb = MenuBuilder(master)
 		self.filt = Filterer(self.frmTop, self.conf, self)
-		print(self.filt.txtImagesFolder)
 		self.sort = Sorterer(self.frmBtm, self.conf, self)
 		
 		master.mainloop()

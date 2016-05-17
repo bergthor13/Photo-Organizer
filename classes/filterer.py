@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 import os, exifread,shutil
 from .filemanip import FileManip
-from pprint import pprint
 import logging
 class Filterer:
 	def __init__(self, master, config, program):
@@ -58,9 +57,9 @@ class Filterer:
 		else:
 			if messagebox.askyesno("Move", "{0} images will be moved to the destination folder.\nDo you wish to proceed?".format(len(images))):
 				for image in images:
-					print(destDirectory, self.fm.get_filename(image))
 					newFilePath = os.path.join(destDirectory,self.fm.get_filename(image))
 					if not os.path.exists(newFilePath):
+						logging.info("Renaming file '{0}' to {1}".format(image, newFilePath))
 						shutil.move(image, newFilePath)
 					elif newFilePath == image:
 						pass
@@ -81,7 +80,8 @@ class Filterer:
 					res.append(file)
 			except KeyError:
 				pass
-			exif.close()
+			finally:
+				exif.close()
 		return res
 
 	def filter_by_name(self, condition, userInput, lis):

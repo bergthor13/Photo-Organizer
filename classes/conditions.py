@@ -3,6 +3,7 @@ from tkinter import *
 class Conditions:
 	def __init__(self, master):
 		self.master = master
+		self.windowOpen = False
 		self.conOptions = [
 			"EXIF Tag Name",
 			"File Extension",
