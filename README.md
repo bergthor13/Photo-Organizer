@@ -8,7 +8,7 @@ exifread
 
 Pillow
 
-##Key Features
+## Key Features
 - Filter out photos by any EXIF key
 - Rename photos with custom format
 - Move photos into a organized folder structure
