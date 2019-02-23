@@ -1,4 +1,4 @@
-#Photo Organizer
+# Photo Organizer
 
 ## How to Run
 This program is written in Pyhton 3. Run the file photomgr.py to start the program.
